@@ -9,7 +9,7 @@ Parameters:
     Description: Environment name for the application dev/staging/production
     Type: String
     AllowedValues:
-      - hervlokossou
+      - boucharabako
 
 ###############################################################################
 Resources:
