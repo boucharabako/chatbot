@@ -19,6 +19,16 @@ pipeline {
             }
         }
 
+        stage('Environnement variable injection'){
+            steps {
+                script{
+                    withCredentials([file(credentialsId: 'boucharabako-chatbot-env-file', variable: 'ENV_FILE')]) {
+                        sh "cat ${ENV_FILE} > .env"
+                }
+            }
+        }
+
+
 
         stage('Tests Unitaires') {
             steps {
