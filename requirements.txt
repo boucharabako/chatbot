@@ -3,3 +3,5 @@ pytest
 boto3
 mangum
 pydantic_settings
+httpx
+mistralai

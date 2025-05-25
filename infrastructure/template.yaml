@@ -54,3 +54,12 @@ Outputs:
     Description: URL of your API
     Value:
       Fn::Sub: 'https://${Api}.execute-api.${AWS::Region}.${AWS::URLSuffix}/'
+
+
+Outputs:
+  DynamoDBTableName:
+    Value: !Ref DynamoDBTable
+  ApiUrl:
+    Description: URL of your API
+    Value:
+      Fn::Sub: 'https://${Api}.execute-api.${AWS::Region}.${AWS::URLSuffix}/'
