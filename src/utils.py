@@ -63,3 +63,26 @@ class Utils:
             TableName=env_vars.DYNAMO_TABLE,
             Item=item,
         )
+        
+    @staticmethod
+    def get_conversation_history(user_id: str):
+        dynamo_resource = boto3.resource("dynamodb", region_name=env_vars.AWS_REGION_NAME)
+        table = dynamo_resource.Table(env_vars.DYNAMO_TABLE)
+
+        response = table.query(
+            KeyConditionExpression=Key("conversation_id").eq(user_id),
+            ScanIndexForward=True  # de l'ancien au récent
+        )
+
+        history = []
+        for item in response.get("Items", []):
+            history.append({
+                "question": item.get("question"),
+                "answer": item.get("answer"),
+                "timestamp": item.get("timestamp")
+            })
+        return history
+
+    @staticmethod
+    def get_timestamp():
+        return datetime.utcnow().isoformat() + "Z"

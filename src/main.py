@@ -1,9 +1,11 @@
 from fastapi import FastAPI
+from fastapi import Request
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from mangum import Mangum
 import json, boto3
 from mistralai import Mistral
+
 
 from .config import env_vars
 
@@ -43,8 +45,37 @@ async def root():
     return {"msg": "Hello World"}
 
 
+# @app.get("/chat")
+# async def chat(question: str):
+#     chat_response = client.chat.complete(
+#         model=model,
+#         messages=[
+#             {
+#                 "role": "user",
+#                 "content": question,
+#             },
+#         ]
+#     )
+#     print(chat_response)
+#     response = {
+#         "id": {
+#             "S": f"{chat_response.id}",
+#         },
+#         "question": {
+#             "S": f"{question}",
+#         },
+#         "answer": {
+#             "S": f"{chat_response.choices[0].message.content}",
+#         }
+#     }
+#     Utils.insert_data(response)
+#     return response
+
+
 @app.get("/chat")
-async def chat(question: str):
+async def chat(request: Request, question: str):
+    user_id = request.headers.get("X-User-ID", "inconnu")
+
     chat_response = client.chat.complete(
         model=model,
         messages=[
@@ -54,23 +85,32 @@ async def chat(question: str):
             },
         ]
     )
-    print(chat_response)
+
+    answer = chat_response.choices[0].message.content
+
     response = {
-        "id": {
-            "S": f"{chat_response.id}",
-        },
-        "question": {
-            "S": f"{question}",
-        },
-        "answer": {
-            "S": f"{chat_response.choices[0].message.content}",
-        }
+        "conversation_id": {"S": user_id},
+        "message_id": {"S": str(uuid4())},
+        "question": {"S": question},
+        "answer": {"S": answer},
+        "timestamp": {"S": Utils.get_timestamp()}
     }
     Utils.insert_data(response)
-    return response
+
+    return {
+        "question": question,
+        "answer": answer
+    }
+
+@app.get("/history")
+async def get_history(request: Request):
+    user_id = request.headers.get("X-User-ID", "inconnu")
+    history = Utils.get_conversation_history(user_id)
+    return {"history": history}
+
 
 async def chats():
-    # Get al chats here
+    # All chats
     return {}
 
 handler = Mangum(app)
