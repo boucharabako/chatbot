@@ -44,7 +44,6 @@ Resources:
         Variables:
           AWS_REGION_NAME: !Ref AWS::Region
           DYNAMO_TABLE: !Ref DynamoDBTable
-
           BACKEND_CHAT_URL: !Sub 'https://${Api}.execute-api.${AWS::Region}.${AWS::URLSuffix}/chat'
 
   Api:
