@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     AWS_SECRET_ACCESS_KEY: str = ""
     AWS_REGION_NAME: str = ""
     DYNAMO_TABLE: str = ""
-    # AWS_PROFILE: str = ""
+
     MISTRAL_API_KEY: str = ""
     TELEGRAM_TOKEN: str = ""
     TELEGRAM_CHAT_ID: str = ""

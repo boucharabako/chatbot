@@ -23,7 +23,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'boucharabako-chatbot-env-file', variable: 'ENV_FILE')]) {
-                        sh "cat ${ENV_FILE} >> .env"
+                        sh "cat ${ENV_FILE} > .env"
                     }
                 }
             }
@@ -82,14 +82,12 @@ pipeline {
                 // Notify success
                 echo 'Build succeeded!'
             // Uncomment the line below to send a message to Telegram
-            // sh "curl -X POST https://api.telegram.org/bot${BOT_TOKEN}/sendMessage -d chat_id=<CHAT_ID> -d text='Build succeeded!'"
             }
         }
         failure {
             script {
                 // Notify failure
                 echo 'Build failed!'
-            // Uncomment the line below to send a message to Telegram
             // sh "curl -X POST https://api.telegram.org/bot${BOT_TOKEN}/sendMessage -d chat_id=<CHAT_ID> -d text='Build failed!'"
             }
         }
