@@ -4,26 +4,26 @@ Description: AWS CloudFormation Template for the Application
 
 ###############################################################################
 Parameters:
-###############################################################################
+  ###############################################################################
   EnvironmentName:
     Description: Environment name for the application dev/staging/production
     Type: String
     AllowedValues:
-      - boucharabako
+    - boucharabako
 
 ###############################################################################
 Resources:
-###############################################################################
+  ###############################################################################
   DynamoDBTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
       TableName: !Sub "chatbot-dbtable-${EnvironmentName}"
       AttributeDefinitions:
-        - AttributeName: "id"
-          AttributeType: "S"
+      - AttributeName: "id"
+        AttributeType: "S"
       KeySchema:
-        - AttributeName: "id"
-          KeyType: "HASH"
+      - AttributeName: "id"
+        KeyType: "HASH"
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
@@ -44,24 +44,13 @@ Resources:
         Variables:
           AWS_REGION_NAME: !Ref AWS::Region
           DYNAMO_TABLE: !Ref DynamoDBTable
-          AWS_ACCESS_KEY_ID: !Ref AWS_ACCESS_KEY_ID
-          AWS_SECRET_ACCESS_KEY: !Ref AWS_SECRET_ACCESS_KEY
+
           BACKEND_CHAT_URL: !Sub 'https://${Api}.execute-api.${AWS::Region}.${AWS::URLSuffix}/chat'
 
   Api:
     Type: AWS::Serverless::HttpApi
     Properties:
       Name: !Sub "chatbot-apigateway-${EnvironmentName}"
-
-
-Outputs:
-  DynamoDBTableName:
-    Value: !Ref DynamoDBTable
-  ApiUrl:
-    Description: URL of your API
-    Value:
-      Fn::Sub: 'https://${Api}.execute-api.${AWS::Region}.${AWS::URLSuffix}/'
-
 
 Outputs:
   DynamoDBTableName:

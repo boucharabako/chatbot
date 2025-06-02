@@ -1,7 +1,7 @@
 
 # by default, we settle down in this region
 AWS_REGION ?= eu-west-3
-AWS_PROFILE ?= "esgis_profile"
+
 
 clean:
 	rm -rf venv
@@ -25,6 +25,7 @@ deploy:
 	@echo "Deploying to " ${env}
 	# Extract env from the branch name
 
+	
 	sam deploy --resolve-s3 --template-file .aws-sam/build/template.yaml --stack-name multi-stack-${env} \
          --capabilities CAPABILITY_IAM --region ${AWS_REGION} --parameter-overrides EnvironmentName=${env} --no-fail-on-empty-changeset
 
