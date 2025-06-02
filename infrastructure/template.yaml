@@ -38,8 +38,6 @@ Resources:
       Events:
         Api:
           Type: HttpApi
-          Properties:
-            ApiId: !Ref Api
       Environment:
         Variables:
           AWS_REGION_NAME: !Ref AWS::Region
