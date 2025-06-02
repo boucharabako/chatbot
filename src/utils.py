@@ -53,7 +53,7 @@ class Utils:
     @staticmethod
     def get_session():
         return boto3.Session(
-            region_name=env_vars.AWS_REGION_NAME, profile_name=env_vars.AWS_PROFILE
+            region_name=env_vars.AWS_REGION_NAME
         )
      
    

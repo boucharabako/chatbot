@@ -67,3 +67,13 @@ def test_divide_by_zero(calculator):
 def test_divide_negative_numbers(calculator):
     result = calculator.divide(-10, 2)
     assert result == -5.0
+
+
+def test_chat_route():
+    response = client.get("/chat", params={"question": "Bonjour"}, headers={"X-User-ID": "test_user"})
+    assert response.status_code == 200
+    data = response.json()
+    assert "question" in data
+    assert "answer" in data
+    assert data["question"] == "Bonjour"
+    assert isinstance(data["answer"], str)
