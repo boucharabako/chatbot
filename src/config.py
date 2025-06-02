@@ -5,10 +5,17 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     ENV_NAME: str = "local"
+    AWS_ACCESS_KEY_ID: str = ""
+    AWS_SECRET_ACCESS_KEY: str = ""
     AWS_REGION_NAME: str = ""
     DYNAMO_TABLE: str = ""
-    AWS_PROFILE: str = ""
+    # AWS_PROFILE: str = ""
     MISTRAL_API_KEY: str = ""
+    TELEGRAM_TOKEN: str = ""
+    TELEGRAM_CHAT_ID: str = ""
+    TELEGRAM_API_URL: str = ""
+    BACKEND_CHAT_URL: str = ""
+    WEBHOOK_URL: str = ""
 
     model_config = SettingsConfigDict(env_file=".env")
 

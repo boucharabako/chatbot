@@ -5,6 +5,8 @@ from contextlib import asynccontextmanager
 from mangum import Mangum
 import json, boto3
 from mistralai import Mistral
+from uuid import uuid4
+from .telegrambot import router as telegrambot_router
 
 
 from .config import env_vars
@@ -15,7 +17,6 @@ from .utils import Utils
 api_key = env_vars.MISTRAL_API_KEY
 model = "mistral-small-latest"
 client = Mistral(api_key=api_key)
-
 
 
 @asynccontextmanager
@@ -30,6 +31,7 @@ app = FastAPI(
     version="1.0.0",
     lifespan=app_lifespan,
 )
+app.include_router(telegrambot_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -74,7 +76,7 @@ async def root():
 
 @app.get("/chat")
 async def chat(request: Request, question: str):
-    user_id = request.headers.get("X-User-ID", "inconnu")
+    user_id = request.headers.get("X-User-ID", "mistral_bot")
 
     chat_response = client.chat.complete(
         model=model,
@@ -83,24 +85,30 @@ async def chat(request: Request, question: str):
                 "role": "user",
                 "content": question,
             },
-        ]
+        ],
     )
 
     answer = chat_response.choices[0].message.content
 
+    # response = {
+    #     "conversation_id": {"S": user_id},
+    #     "message_id": {"S": str(uuid4())},
+    #     "question": {"S": question},
+    #     "answer": {"S": answer},
+    #     "timestamp": {"S": Utils.get_timestamp()}
+    # }
     response = {
-        "conversation_id": {"S": user_id},
-        "message_id": {"S": str(uuid4())},
-        "question": {"S": question},
-        "answer": {"S": answer},
-        "timestamp": {"S": Utils.get_timestamp()}
+        "id": str(uuid4()),  # Ajout de la clé primaire attendue par DynamoDB
+        "conversation_id": user_id,
+        "message_id": str(uuid4()),
+        "question": question,
+        "answer": answer,
+        "timestamp": Utils.get_timestamp(),
     }
     Utils.insert_data(response)
 
-    return {
-        "question": question,
-        "answer": answer
-    }
+    return {"question": question, "answer": answer}
+
 
 @app.get("/history")
 async def get_history(request: Request):
@@ -112,5 +120,6 @@ async def get_history(request: Request):
 async def chats():
     # All chats
     return {}
+
 
 handler = Mangum(app)

@@ -40,6 +40,13 @@ Resources:
           Type: HttpApi
           Properties:
             ApiId: !Ref Api
+      Environment:
+        Variables:
+          AWS_REGION_NAME: !Ref AWS::Region
+          DYNAMO_TABLE: !Ref DynamoDBTable
+          AWS_ACCESS_KEY_ID: !Ref AWS_ACCESS_KEY_ID
+          AWS_SECRET_ACCESS_KEY: !Ref AWS_SECRET_ACCESS_KEY
+          BACKEND_CHAT_URL: !Sub 'https://${Api}.execute-api.${AWS::Region}.${AWS::URLSuffix}/chat'
 
   Api:
     Type: AWS::Serverless::HttpApi
