@@ -89,6 +89,7 @@ async def chat(request: Request, question: str):
     )
 
     answer = chat_response.choices[0].message.content
+    
 
     # response = {
     #     "conversation_id": {"S": user_id},
