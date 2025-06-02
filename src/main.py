@@ -76,7 +76,7 @@ async def root():
 
 @app.get("/chat")
 async def chat(request: Request, question: str):
-    user_id = request.headers.get("X-User-ID", "mistral_bot")
+    user_id = request.headers.get("X-User-ID", "mist_bot")
 
     chat_response = client.chat.complete(
         model=model,
